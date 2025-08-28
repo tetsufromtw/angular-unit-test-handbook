@@ -1,0 +1,192 @@
+<div class="async-tests-container">
+  <div class="section-header">
+    <h2>非同期テスト (Async Tests)</h2>
+    <p class="section-description">
+      async/await、Promise、タイムアウト設定を使用して非同期操作のテストを学ぶ
+    </p>
+  </div>
+
+  <div class="test-cases">
+    @for (testCase of asyncTestCases; track testCase.name; let i = $index) {
+      <div class="test-case-card">
+        <div class="test-header">
+          <h3>{{ testCase.name }}</h3>
+          <p>{{ testCase.description }}</p>
+          <div class="test-status">
+            @if (testCase.isRunning) {
+              <span class="status running">🔄 実行中...</span>
+            } @else if (testCase.completed) {
+              <span class="status completed">✅ 完了</span>
+            } @else {
+              <span class="status ready">⏳ 準備完了</span>
+            }
+          </div>
+        </div>
+
+        <div class="test-content">
+          <div class="code-section">
+            <h4>コード例：</h4>
+            <div class="code-grid">
+              <div class="code-panel">
+                <app-code-highlight
+                  [code]="testCase.codeExample.implementation"
+                  language="typescript"
+                  title="実装コード (Implementation)">
+                </app-code-highlight>
+              </div>
+              <div class="code-panel">
+                <app-code-highlight
+                  [code]="testCase.codeExample.test"
+                  language="typescript"
+                  title="テストコード (Test)">
+                </app-code-highlight>
+              </div>
+            </div>
+          </div>
+
+          <div class="execution-section">
+            <div class="action-area">
+              <button 
+                class="run-btn" 
+                [disabled]="testCase.isRunning"
+                (click)="runAsyncTest(i)"
+                type="button">
+                @if (testCase.isRunning) {
+                  実行中...
+                } @else {
+                  テストを実行
+                }
+              </button>
+              
+              @if (testCase.result) {
+                <div class="result" [class.success]="testCase.result.includes('✓')" [class.error]="testCase.result.includes('✗')">
+                  {{ testCase.result }}
+                </div>
+              }
+            </div>
+
+            @if (testCase.isRunning || (testCase.completed && executionLog.length > 0)) {
+              <div class="execution-log">
+                <h4>実行ログ：</h4>
+                <div class="log-content">
+                  @for (log of executionLog; track log) {
+                    <div class="log-entry" 
+                         [class.success]="log.includes('✓')" 
+                         [class.info]="log.includes('開始') || log.includes('実行')"
+                         [class.completed]="log.includes('完了')">
+                      {{ log }}
+                    </div>
+                  }
+                  @if (testCase.isRunning) {
+                    <div class="log-entry processing">
+                      <span class="spinner"></span> 処理中...
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="comprehensive-test">
+    <div class="comprehensive-header">
+      <h3>すべての非同期テストを実行</h3>
+      <p>順番にすべての非同期テストケースを実行</p>
+    </div>
+    <button class="run-all-btn" (click)="runAllAsyncTests()" type="button">
+      すべてのテストを実行
+    </button>
+  </div>
+
+  <div class="additional-examples">
+    <div class="example-grid">
+      <div class="example-card">
+        <h3>タイムアウト設定の例</h3>
+        <div class="code-section">
+          <app-code-highlight
+            [code]="createTimeoutExample()"
+            language="typescript"
+            title="タイムアウト設定の例">
+          </app-code-highlight>
+        </div>
+        <div class="explanation">
+          <p>💡 <strong>ポイント説明：</strong></p>
+          <ul>
+            <li>第二引数でテストのタイムアウト時間（ミリ秒）を指定</li>
+            <li>指定時間内にテストが完了しない場合、失敗としてマークされる</li>
+            <li>describe、it、beforeEach、afterEach などに適用可能</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h3>Promise 処理の例</h3>
+        <div class="code-section">
+          <app-code-highlight
+            [code]="createPromiseExample()"
+            language="typescript"
+            title="Promise 処理の例">
+          </app-code-highlight>
+        </div>
+        <div class="explanation">
+          <p>💡 <strong>ポイント説明：</strong></p>
+          <ul>
+            <li>async/await を使用せずに Promise を返すことができる</li>
+            <li>.then() と .catch() を使用して成功と失敗の状況を処理</li>
+            <li>Promise が拒否されたときは .catch() でエラーをキャッチ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="best-practices">
+    <h3>非同期テストのベストプラクティス</h3>
+    <div class="practices-grid">
+      <div class="practice-item">
+        <div class="practice-icon">⚡</div>
+        <h4>async/await を使用</h4>
+        <p>現代 JavaScript では async/await 構文の使用が推奨されており、Promise チェーンよりも直感的で読みやすい</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">⏰</div>
+        <h4>適切なタイムアウトを設定</h4>
+        <p>操作の予想実行時間に基づいてタイムアウトを設定し、テストが無限に待機したり、早期に失敗したりしないようにする</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">🧹</div>
+        <h4>リソースのクリーンアップ</h4>
+        <p>afterEach の中で非同期操作によって作成されたリソースをクリーンアップし、テスト間の相互影響を防ぐ</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">🔍</div>
+        <h4>エラー処理</h4>
+        <p>非同期操作の成功と失敗の状況を明確にテストし、エラーが正しくキャッチされ処理されることを確認</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="learning-summary">
+    <h3>学習ポイントのまとめ</h3>
+    <div class="summary-points">
+      <div class="point">
+        <strong>async/await：</strong>現代の非同期テストの第一選択肢であり、構文が明確にで直感的
+      </div>
+      <div class="point">
+        <strong>タイムアウト設定：</strong>第二引数でテストのタイムアウト時間を指定し、無限待機を防止
+      </div>
+      <div class="point">
+        <strong>Promise チェーン：</strong>従来の Promise 処理方法であり、依然として有効で役立つ
+      </div>
+      <div class="point">
+        <strong>エラー処理：</strong>try/catch または .catch() を使用して非同期操作のエラーを処理
+      </div>
+    </div>
+  </div>
+</div>

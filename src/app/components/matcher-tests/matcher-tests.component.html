@@ -1,0 +1,324 @@
+<div class="matcher-tests-container">
+  <div class="section-header">
+    <h2>マッチャーテスト (Matchers)</h2>
+    <p class="section-description">
+      Jasmine のさまざまなマッチャーを学ぶ、基本比較、数値、テキスト列、配列、オブジェクトのマッチングを含む
+    </p>
+  </div>
+
+  <div class="matcher-categories">
+    @for (category of matcherCategories; track category.categoryName; let categoryIndex = $index) {
+      <div class="category-section">
+        <div class="category-header">
+          <h3>{{ category.categoryName }}</h3>
+          <p>{{ category.description }}</p>
+        </div>
+
+        <div class="matchers-grid">
+          @for (matcher of category.matchers; track matcher.name; let matcherIndex = $index) {
+            <div class="matcher-card">
+              <div class="matcher-header">
+                <h4>{{ matcher.name }}</h4>
+                <p>{{ matcher.description }}</p>
+                <div class="test-status">
+                  @if (matcher.isRunning) {
+                    <span class="status running">🔍 テスト中...</span>
+                  } @else if (matcher.result) {
+                    <span class="status completed">✅ 完了</span>
+                  } @else {
+                    <span class="status ready">⏳ 準備完了</span>
+                  }
+                </div>
+              </div>
+
+              <div class="matcher-content">
+                <div class="code-section">
+                  <h5>コード例：</h5>
+                  <div class="code-grid">
+                    <div class="code-panel">
+                      <app-code-highlight
+                        [code]="matcher.codeExample.implementation"
+                        language="typescript"
+                        title="実装コード (Implementation)">
+                      </app-code-highlight>
+                    </div>
+                    <div class="code-panel">
+                      <app-code-highlight
+                        [code]="matcher.codeExample.test"
+                        language="typescript"
+                        title="テストコード (Test)">
+                      </app-code-highlight>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="execution-section">
+                  <div class="action-area">
+                    <button 
+                      class="run-btn" 
+                      [disabled]="matcher.isRunning"
+                      (click)="runMatcherTest(categoryIndex, matcherIndex)"
+                      type="button">
+                      @if (matcher.isRunning) {
+                        テスト中...
+                      } @else {
+                        マッチャーテストを実行
+                      }
+                    </button>
+                    
+                    @if (matcher.result) {
+                      <div class="result" [class.success]="matcher.result.includes('✓')" [class.error]="matcher.result.includes('✗')">
+                        {{ matcher.result }}
+                      </div>
+                    }
+                  </div>
+
+                  @if (matcher.isRunning && executionLog.length > 0) {
+                    <div class="execution-log">
+                      <h5>実行ログ：</h5>
+                      <div class="log-content">
+                        @for (log of executionLog; track log) {
+                          <div class="log-entry" 
+                               [class.success]="log.includes('✓')" 
+                               [class.info]="log.includes('開始') || log.includes('実行')"
+                               [class.completed]="log.includes('完了')">
+                            {{ log }}
+                          </div>
+                        }
+                        @if (matcher.isRunning) {
+                          <div class="log-entry processing">
+                            <span class="spinner"></span> 処理中...
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="comprehensive-test">
+    <div class="comprehensive-header">
+      <h3>すべてのマッチャーテストを実行</h3>
+      <p>カテゴリ順にすべてのマッチャーテストケースを実行</p>
+    </div>
+    <button class="run-all-btn" (click)="runAllMatcherTests()" type="button">
+      すべてのマッチャーテストを実行
+    </button>
+  </div>
+
+  <div class="additional-examples">
+    <div class="example-grid">
+      <div class="example-card">
+        <h3>Truthy/Falsy マッチャー</h3>
+        <div class="code-section">
+          <app-code-highlight
+            [code]="createTruthyFalsyExample()"
+            language="typescript"
+            title="真偽値チェック">
+          </app-code-highlight>
+        </div>
+        <div class="explanation">
+          <p>💡 <strong>ポイント説明：</strong></p>
+          <ul>
+            <li>toBeTruthy() は値が真偽値（truthy）であるかをチェック</li>
+            <li>toBeFalsy() は値が偽偽値（falsy）であるかをチェック</li>
+            <li>falsy と false の違いに注意</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h3>カスタムマッチャー</h3>
+        <div class="code-section">
+          <app-code-highlight
+            [code]="createCustomMatcherExample()"
+            language="typescript"
+            title="カスタムマッチャーの例">
+          </app-code-highlight>
+        </div>
+        <div class="explanation">
+          <p>💡 <strong>ポイント説明：</strong></p>
+          <ul>
+            <li>jasmine.addMatchers() を使用してカスタムマッチャーを追加</li>
+            <li>compare 関数は必ず {{ '{' }} pass: boolean, message: string {{ '}' }} を返す必要があります</li>
+            <li>柔軟な比較のために追加の引数を受け取ることができます</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="matcher-reference">
+    <h3>よく使うマッチャーリファレンス</h3>
+    <div class="reference-grid">
+      <div class="reference-category">
+        <h4>基本マッチャー</h4>
+        <div class="matchers-list">
+          <div class="matcher-item">
+            <code>toBe()</code>
+            <span>=== 厳密等価</span>
+          </div>
+          <div class="matcher-item">
+            <code>toEqual()</code>
+            <span>深い等価比較</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeNull()</code>
+            <span>null であるかをチェック</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeUndefined()</code>
+            <span>undefined であるかをチェック</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeDefined()</code>
+            <span>定義されているかをチェック</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeTruthy()</code>
+            <span>真偽値をチェック</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeFalsy()</code>
+            <span>偽偽値をチェック</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reference-category">
+        <h4>数値マッチャー</h4>
+        <div class="matchers-list">
+          <div class="matcher-item">
+            <code>toBeGreaterThan()</code>
+            <span>より大きいか比較</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeLessThan()</code>
+            <span>より小さいか比較</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeGreaterThanOrEqual()</code>
+            <span>以上か比較</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeLessThanOrEqual()</code>
+            <span>以下か比較</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeCloseTo()</code>
+            <span>浮動小数点数の精度比較</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeNaN()</code>
+            <span>NaN であるかをチェック</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reference-category">
+        <h4>テキスト列マッチャー</h4>
+        <div class="matchers-list">
+          <div class="matcher-item">
+            <code>toContain()</code>
+            <span>部分テキスト列を含むか</span>
+          </div>
+          <div class="matcher-item">
+            <code>toMatch()</code>
+            <span>正規表現マッチ</span>
+          </div>
+          <div class="matcher-item">
+            <code>toStartWith()</code>
+            <span>...で始まるか</span>
+          </div>
+          <div class="matcher-item">
+            <code>toEndWith()</code>
+            <span>...で終わるか</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reference-category">
+        <h4>配列とオブジェクト</h4>
+        <div class="matchers-list">
+          <div class="matcher-item">
+            <code>toContain()</code>
+            <span>配列に要素が含まれるか</span>
+          </div>
+          <div class="matcher-item">
+            <code>toHaveSize()</code>
+            <span>長さをチェック</span>
+          </div>
+          <div class="matcher-item">
+            <code>toBeInstanceOf()</code>
+            <span>型のインスタンスかをチェック</span>
+          </div>
+          <div class="matcher-item">
+            <code>toHaveProperty()</code>
+            <span>プロパティの存在をチェック</span>
+          </div>
+          <div class="matcher-item">
+            <code>objectContaining()</code>
+            <span>部分オブジェクトマッチ</span>
+          </div>
+          <div class="matcher-item">
+            <code>arrayContaining()</code>
+            <span>配列部分マッチ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="best-practices">
+    <h3>マッチャー使用のベストプラクティス</h3>
+    <div class="practices-grid">
+      <div class="practice-item">
+        <div class="practice-icon">🎯</div>
+        <h4>適切なマッチャーの選択</h4>
+        <p>テストの要件に応じて最も適切なマッチャーを選択、toBe と toEqual、toContain と toMatch の使い分け</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">📏</div>
+        <h4>浮動小数点数の取り扱い</h4>
+        <p>浮動小数点数の比較には toBeCloseTo() を使用し、精度問題によるテスト失敗を回避</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">🔍</div>
+        <h4>明確にな期待値</h4>
+        <p>具体的なマッチャーを使用して明確な期待値を表現、あいまいな toBeTruthy() などは避ける</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">⚙️</div>
+        <h4>カスタムマッチャー</h4>
+        <p>繰り返し使用する複雑な検証ロジックには、カスタムマッチャーを作成して可読性を向上</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="learning-summary">
+    <h3>学習ポイントまとめ</h3>
+    <div class="summary-points">
+      <div class="point">
+        <strong>基本マッチャー：</strong>toBe() は厳密等価に、toEqual() は深い比較に使用
+      </div>
+      <div class="point">
+        <strong>数値マッチャー：</strong>サイズ比較と精度処理を提供し、数値検証に適用
+      </div>
+      <div class="point">
+        <strong>テキスト列マッチャー：</strong>含むチェックと正規表現マッチングをサポート
+      </div>
+      <div class="point">
+        <strong>配列オブジェクト：</strong>内容、サイズ、型、構造を検査する専用マッチャー
+      </div>
+    </div>
+  </div>
+</div>

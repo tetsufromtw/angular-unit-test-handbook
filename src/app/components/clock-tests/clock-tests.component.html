@@ -1,0 +1,294 @@
+<div class="clock-tests-container">
+  <div class="section-header">
+    <h2>時間制御テスト (Clock Tests)</h2>
+    <p class="section-description">
+      jasmine.clock() を使用して時間の流れを制御し、タイマー、アニメーション、時間関連機能をテストする方法を学ぶ
+    </p>
+  </div>
+
+  <div class="test-cases">
+    @for (testCase of clockTestCases; track testCase.name; let i = $index) {
+      <div class="test-case-card">
+        <div class="test-header">
+          <h3>{{ testCase.name }}</h3>
+          <p>{{ testCase.description }}</p>
+          <div class="test-status">
+            @if (testCase.isRunning) {
+              <span class="status running">⏰ 実行中...</span>
+            } @else if (testCase.completed) {
+              <span class="status completed">✅ 完了</span>
+            } @else {
+              <span class="status ready">⏳ 準備完了</span>
+            }
+          </div>
+        </div>
+
+        <div class="test-content">
+          <div class="code-section">
+            <h4>コード例：</h4>
+            <div class="code-grid">
+              <div class="code-panel">
+                <app-code-highlight
+                  [code]="testCase.codeExample.implementation"
+                  language="typescript"
+                  title="実装コード (Implementation)">
+                </app-code-highlight>
+              </div>
+              <div class="code-panel">
+                <app-code-highlight
+                  [code]="testCase.codeExample.test"
+                  language="typescript"
+                  title="テストコード (Test)">
+                </app-code-highlight>
+              </div>
+            </div>
+          </div>
+
+          <div class="execution-section">
+            <div class="action-area">
+              <button 
+                class="run-btn" 
+                [disabled]="testCase.isRunning"
+                (click)="runClockTest(i)"
+                type="button">
+                @if (testCase.isRunning) {
+                  実行中...
+                } @else {
+                  時間テストを実行
+                }
+              </button>
+              
+              @if (testCase.result) {
+                <div class="result" [class.success]="testCase.result.includes('✓')" [class.error]="testCase.result.includes('✗')">
+                  {{ testCase.result }}
+                </div>
+              }
+            </div>
+
+            @if (testCase.isRunning || (testCase.completed && executionLog.length > 0)) {
+              <div class="execution-log">
+                <h4>実行ログ：</h4>
+                <div class="log-content">
+                  @for (log of executionLog; track log) {
+                    <div class="log-entry" 
+                         [class.success]="log.includes('✓')" 
+                         [class.info]="log.includes('開始') || log.includes('実行')"
+                         [class.completed]="log.includes('完了')">
+                      {{ log }}
+                    </div>
+                  }
+                  @if (testCase.isRunning) {
+                    <div class="log-entry processing">
+                      <span class="spinner"></span> 時間推進中...
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="comprehensive-test">
+    <div class="comprehensive-header">
+      <h3>全ての時間制御テストを実行</h3>
+      <p>順番に全ての jasmine.clock() テストケースを実行</p>
+    </div>
+    <button class="run-all-btn" (click)="runAllClockTests()" type="button">
+      全ての時間テストを実行
+    </button>
+  </div>
+
+  <div class="additional-examples">
+    <div class="example-grid">
+      <div class="example-card">
+        <h3>高度な時間制御</h3>
+        <div class="code-section">
+          <app-code-highlight
+            [code]="createAdvancedClockExample()"
+            language="typescript"
+            title="ネストされたタイマーとクリーンアップ">
+          </app-code-highlight>
+        </div>
+        <div class="explanation">
+          <p>💡 <strong>ポイント説明：</strong></p>
+          <ul>
+            <li>jasmine.clock().tick() で時間推進を正確に制御可能</li>
+            <li>ネストされた setTimeout と setInterval に対応</li>
+            <li>afterEach で uninstall() を呼び出してクリーンアップが必要</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h3>パフォーマンスとデバウンステスト</h3>
+        <div class="code-section">
+          <app-code-highlight
+            [code]="createPerformanceTestExample()"
+            language="typescript"
+            title="パフォーマンステストとデバウンス機能">
+          </app-code-highlight>
+        </div>
+        <div class="explanation">
+          <p>💡 <strong>ポイント説明：</strong></p>
+          <ul>
+            <li>実行時間をシミュレートしてパフォーマンステストが可能</li>
+            <li>デバウンス（debounce）とスロットル（throttle）機能をテスト</li>
+            <li>Date.now() も clock によって制御される</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clock-methods-reference">
+    <h3>jasmine.clock() メソッド参照</h3>
+    <div class="methods-grid">
+      <div class="method-item">
+        <div class="method-name">jasmine.clock().install()</div>
+        <div class="method-description">時間制御をインストールし、ネイティブのタイマー関数を引き継ぐ</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">jasmine.clock().uninstall()</div>
+        <div class="method-description">時間制御を削除し、ネイティブタイマー関数を復元</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">jasmine.clock().tick(milliseconds)</div>
+        <div class="method-description">指定されたミリ秒数だけ時間を進める</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">jasmine.clock().mockDate(date)</div>
+        <div class="method-description">特定の日付と時間をモック</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timing-scenarios">
+    <h3>一般的な時間テストシナリオ</h3>
+    <div class="scenarios-grid">
+      <div class="scenario-item">
+        <div class="scenario-icon">⏱️</div>
+        <h4>タイマー テスト</h4>
+        <p>setTimeout と setInterval の動作をテストし、コールバック関数が正しい時間に呼び出されることを確認</p>
+      </div>
+      
+      <div class="scenario-item">
+        <div class="scenario-icon">🎬</div>
+        <h4>アニメーション テスト</h4>
+        <p>時間に基づくアニメーション効果をテストし、プログレスバー、フェードイン・フェードアウトなどのアニメーションロジックを検証</p>
+      </div>
+      
+      <div class="scenario-item">
+        <div class="scenario-icon">📅</div>
+        <h4>日付関連</h4>
+        <p>日付計算、ビジネスタイムチェック、イベントスケジューリングなどの時間に敏感な機能をテスト</p>
+      </div>
+      
+      <div class="scenario-item">
+        <div class="scenario-icon">🚀</div>
+        <h4>パフォーマンステスト</h4>
+        <p>実行時間をシミュレートし、タイムアウト処理、リトライメカニズム、パフォーマンスクリティカルパスをテスト</p>
+      </div>
+      
+      <div class="scenario-item">
+        <div class="scenario-icon">⏸️</div>
+        <h4>デバウンス・スロットル</h4>
+        <p>デバウンス（debounce）とスロットル（throttle）機能の正確性をテスト</p>
+      </div>
+      
+      <div class="scenario-item">
+        <div class="scenario-icon">🔄</div>
+        <h4>リトライロジック</h4>
+        <p>遅延を伴うリトライメカニズムをテストし、リトライ回数と間隔時間を検証</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="best-practices">
+    <h3>時間テストのベストプラクティス</h3>
+    <div class="practices-grid">
+      <div class="practice-item">
+        <div class="practice-icon">🧹</div>
+        <h4>適切なクリーンアップ</h4>
+        <p>必ず afterEach で jasmine.clock().uninstall() を呼び出し、テスト間の相互影響を避ける</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">⚡</div>
+        <h4>正確な制御</h4>
+        <p>正確なミリ秒数を使用して時間を進め、境界条件でのテスト失敗を避ける</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">🎯</div>
+        <h4>境界テスト</h4>
+        <p>時間の境界状況、例えばちょうど時間通り、1ミリ秒の差などの極限状況をテスト</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">📋</div>
+        <h4>隔離テスト</h4>
+        <p>各テストで clock を再インストールし、テストの独立性と再現性を確保</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="timing-tips">
+    <h3>時間制御のヒント</h3>
+    <div class="tips-list">
+      <div class="tip-item">
+        <div class="tip-icon">💡</div>
+        <div class="tip-content">
+          <h4>時間推進の微調整</h4>
+          <p>tick(999) の後に tick(1) を使用して「ほぼ時間通り」と「ちょうど時間通り」の違いをテスト</p>
+        </div>
+      </div>
+      
+      <div class="tip-item">
+        <div class="tip-icon">💡</div>
+        <div class="tip-content">
+          <h4>複数のタイマーを組み合わせる</h4>
+          <p>複雑なタイマーの組み合わせをテストする際、段階的に時間を進め、各ステージの状態を逐次検証</p>
+        </div>
+      </div>
+      
+      <div class="tip-item">
+        <div class="tip-icon">💡</div>
+        <div class="tip-content">
+          <h4>リアルタイムのシミュレーション</h4>
+          <p>mockDate() を使用して特定のの日付を設定し、異なる時間点でのビジネスロジックの動作をテスト</p>
+        </div>
+      </div>
+      
+      <div class="tip-item">
+        <div class="tip-icon">💡</div>
+        <div class="tip-content">
+          <h4>実際の待機を避ける</h4>
+          <p>テスト内で実際の setTimeout を使用しない、テストが遅くなり不安定になる</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="learning-summary">
+    <h3>学習ポイントのまとめ</h3>
+    <div class="summary-points">
+      <div class="point">
+        <strong>時間制御：</strong>jasmine.clock() によりテストで時間の流れを正確に制御可能
+      </div>
+      <div class="point">
+        <strong>タイマー テスト：</strong>setTimeout、setInterval などの非同期時間動作をテスト可能
+      </div>
+      <div class="point">
+        <strong>日付モック：</strong>mockDate() により特定のの日付と時間のビジネスロジックをテスト可能
+      </div>
+      <div class="point">
+        <strong>パフォーマンス検証：</strong>実行時間をシミュレートし、パフォーマンス関連のロジックやタイムアウト処理をテスト可能</div>
+    </div>
+  </div>
+</div>

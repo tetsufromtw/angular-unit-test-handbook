@@ -1,0 +1,85 @@
+<div class="basic-tests-container">
+  <div class="section-header">
+    <h2>基本テスト概念 (Basic Test Suite)</h2>
+    <p class="section-description">
+      Jasmine テストフレームワークの基本構文を学ぶ：describe, it, expect と toBe マッチャー
+    </p>
+  </div>
+
+  <div class="test-suites">
+    @for (suite of testSuites; track suite.suiteName; let suiteIndex = $index) {
+      <div class="test-suite-card">
+        <div class="suite-header">
+          <h3>{{ suite.suiteName }}</h3>
+          <p class="suite-description">{{ suite.description }}</p>
+        </div>
+
+        <div class="code-example">
+          <h4>コード例：</h4>
+          <div class="code-grid">
+            <div class="code-panel">
+              <app-code-highlight
+                [code]="suiteIndex === 0 ? codeExamples.basicSuite.implementation :
+                        suiteIndex === 1 ? codeExamples.suiteFunction.implementation :
+                        codeExamples.toBeComparison.implementation"
+                language="typescript"
+                title="実装コード (Implementation)">
+              </app-code-highlight>
+            </div>
+            <div class="code-panel">
+              <app-code-highlight
+                [code]="suiteIndex === 0 ? codeExamples.basicSuite.test :
+                        suiteIndex === 1 ? codeExamples.suiteFunction.test :
+                        codeExamples.toBeComparison.test"
+                language="javascript"
+                title="テストコード (Test)">
+              </app-code-highlight>
+            </div>
+          </div>
+        </div>
+
+        <div class="test-results">
+          <h4>テスト結果：</h4>
+          @for (test of suite.tests; track test.testName; let testIndex = $index) {
+            <div class="test-result" [class.passed]="test.passed" [class.failed]="!test.passed">
+              <div class="test-info">
+                <span class="test-name">{{ test.testName }}</span>
+                <span class="test-description">{{ test.description }}</span>
+              </div>
+              <div class="test-details">
+                <span class="expected">期待値: {{ test.expected }}</span>
+                <span class="actual">実際: {{ test.actual }}</span>
+                <span class="status" [class.pass]="test.passed" [class.fail]="!test.passed">
+                  {{ test.passed ? '✓ 合格' : '✗ 失敗' }}
+                </span>
+              </div>
+              <button 
+                class="run-test-btn" 
+                (click)="executeDemoTest(suiteIndex, testIndex)"
+                type="button">
+                このテストを実行
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="action-buttons">
+    <button class="run-all-btn" (click)="runAllTests()" type="button">
+      すべてのテストを実行
+    </button>
+  </div>
+
+  <div class="learning-notes">
+    <h3>学習ポイント</h3>
+    <ul>
+      <li><strong>describe()</strong>: テストスイートを定義し、関連するテストをまとめる</li>
+      <li><strong>it()</strong>: 個別のテスト仕様を定義</li>
+      <li><strong>expect()</strong>: 期待値を設定</li>
+      <li><strong>toBe()</strong>: === を使用した厳密等価比較</li>
+      <li><strong>.not</strong>: マッチャーの結果を反転</li>
+    </ul>
+  </div>
+</div>

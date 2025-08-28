@@ -1,0 +1,237 @@
+<div class="spy-tests-container">
+  <div class="section-header">
+    <h2>Spy テスト (Spy Tests)</h2>
+    <p class="section-description">
+      spyOn、createSpy、createSpyObj などの機能を使用して関数呼び出しを監視およびモックする方法を学ぶ
+    </p>
+  </div>
+
+  <div class="test-cases">
+    @for (testCase of spyTestCases; track testCase.name; let i = $index) {
+      <div class="test-case-card">
+        <div class="test-header">
+          <h3>{{ testCase.name }}</h3>
+          <p>{{ testCase.description }}</p>
+          <div class="test-status">
+            @if (testCase.isRunning) {
+              <span class="status running">🔍 実行中...</span>
+            } @else if (testCase.completed) {
+              <span class="status completed">✅ 完了</span>
+            } @else {
+              <span class="status ready">⏳ 準備完了</span>
+            }
+          </div>
+        </div>
+
+        <div class="test-content">
+          <div class="code-section">
+            <h4>コード例：</h4>
+            <div class="code-grid">
+              <div class="code-panel">
+                <app-code-highlight
+                  [code]="testCase.codeExample.implementation"
+                  language="typescript"
+                  title="実装コード (Implementation)">
+                </app-code-highlight>
+              </div>
+              <div class="code-panel">
+                <app-code-highlight
+                  [code]="testCase.codeExample.test"
+                  language="typescript"
+                  title="テストコード (Test)">
+                </app-code-highlight>
+              </div>
+            </div>
+          </div>
+
+          <div class="execution-section">
+            <div class="action-area">
+              <button 
+                class="run-btn" 
+                [disabled]="testCase.isRunning"
+                (click)="runSpyTest(i)"
+                type="button">
+                @if (testCase.isRunning) {
+                  実行中...
+                } @else {
+                  Spy テストを実行
+                }
+              </button>
+              
+              @if (testCase.result) {
+                <div class="result" [class.success]="testCase.result.includes('✓')" [class.error]="testCase.result.includes('✗')">
+                  {{ testCase.result }}
+                </div>
+              }
+            </div>
+
+            @if (testCase.isRunning || (testCase.completed && executionLog.length > 0)) {
+              <div class="execution-log">
+                <h4>実行ログ：</h4>
+                <div class="log-content">
+                  @for (log of executionLog; track log) {
+                    <div class="log-entry" 
+                         [class.success]="log.includes('✓')" 
+                         [class.info]="log.includes('開始') || log.includes('実行')"
+                         [class.completed]="log.includes('完了')">
+                      {{ log }}
+                    </div>
+                  }
+                  @if (testCase.isRunning) {
+                    <div class="log-entry processing">
+                      <span class="spinner"></span> 実行中...
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="comprehensive-test">
+    <div class="comprehensive-header">
+      <h3>すべての Spy テストを実行</h3>
+      <p>順番にすべての spy テストケースを実行します</p>
+    </div>
+    <button class="run-all-btn" (click)="runAllSpyTests()" type="button">
+      すべての Spy テストを実行
+    </button>
+  </div>
+
+  <div class="additional-examples">
+    <div class="example-grid">
+      <div class="example-card">
+        <h3>プロパティ Spy の例</h3>
+        <div class="code-section">
+          <app-code-highlight
+            [code]="createPropertySpyExample()"
+            language="typescript"
+            title="spyOnProperty の例">
+          </app-code-highlight>
+        </div>
+        <div class="explanation">
+          <p>💡 <strong>ポイント説明：</strong></p>
+          <ul>
+            <li>spyOnProperty を使用してプロパティの getter/setter を監視</li>
+            <li>プロパティの読み取りおよび設定の動作をモック可能</li>
+            <li>オブジェクトプロパティへのアクセスを制御する必要があるシナリオに適用</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h3>Spy トラッキングの詳細情報</h3>
+        <div class="code-section">
+          <app-code-highlight
+            [code]="createSpyTrackingExample()"
+            language="typescript"
+            title="Spy 呼び出しトラッキング">
+          </app-code-highlight>
+        </div>
+        <div class="explanation">
+          <p>💡 <strong>ポイント説明：</strong></p>
+          <ul>
+            <li>spy.calls は詳細な呼び出し情報を提供</li>
+            <li>呼び出し回数、パラメータ、戻り値などをトラッキング可能</li>
+            <li>argsFor()、first()、mostRecent() などのメソッドが非常に便利</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spy-methods-reference">
+    <h3>Spy メソッドリファレンス</h3>
+    <div class="methods-grid">
+      <div class="method-item">
+        <div class="method-name">spyOn(object, 'method')</div>
+        <div class="method-description">既存のオブジェクトメソッドを監視</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">jasmine.createSpy()</div>
+        <div class="method-description">独立した spy 関数を作成</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">jasmine.createSpyObj()</div>
+        <div class="method-description">複数の spy メソッドを含むオブジェクトを作成</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">spyOnProperty()</div>
+        <div class="method-description">オブジェクトプロパティの getter/setter を監視</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">.and.callThrough()</div>
+        <div class="method-description">元のメソッドを呼び出して監視</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">.and.returnValue()</div>
+        <div class="method-description">指定した値を返す</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">.and.callFake()</div>
+        <div class="method-description">カスタム実装で置き換える</div>
+      </div>
+      
+      <div class="method-item">
+        <div class="method-name">.and.throwError()</div>
+        <div class="method-description">指定したエラーをスロー</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="best-practices">
+    <h3>Spy テストのベストプラクティス</h3>
+    <div class="practices-grid">
+      <div class="practice-item">
+        <div class="practice-icon">🎯</div>
+        <h4>明確な監視対象</h4>
+        <p>テストする特定のメソッドのみを監視し、過剰な監視によるテストの複雑化を避ける</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">🔄</div>
+        <h4>Spy 状態のリセット</h4>
+        <p>beforeEach で spy を再作成し、各テストがクリーンな状態を持つようにする</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">📊</div>
+        <h4>呼び出し詳細の検証</h4>
+        <p>メソッドが呼び出されたかどうかだけでなく、呼び出し回数やパラメータなどの詳細情報も確認する</p>
+      </div>
+      
+      <div class="practice-item">
+        <div class="practice-icon">🏗️</div>
+        <h4>実際の動作のモック</h4>
+        <p>単純な戻り値の代わりに、callFake を使用して実際に近いモック実装を提供する</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="learning-summary">
+    <h3>学習ポイントのまとめ</h3>
+    <div class="summary-points">
+      <div class="point">
+        <strong>spyOn()：</strong>既存のオブジェクトメソッドを監視し、呼び出しをトラッキングして動作を制御
+      </div>
+      <div class="point">
+        <strong>createSpy()：</strong>独立した spy 関数を作成し、コールバック関数のテストに適用
+      </div>
+      <div class="point">
+        <strong>createSpyObj()：</strong>複数の spy メソッドを持つオブジェクトを作成し、サービスのモックに適用
+      </div>
+      <div class="point">
+        <strong>呼び出しトラッキング：</strong>calls オブジェクトを使用してメソッド呼び出しの詳細な情報をトラッキング
+      </div>
+    </div>
+  </div>
+</div>

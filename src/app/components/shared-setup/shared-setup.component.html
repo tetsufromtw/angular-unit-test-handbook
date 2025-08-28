@@ -1,0 +1,170 @@
+<div class="shared-setup-container">
+  <div class="section-header">
+    <h2>共有設定テスト (Shared Setup)</h2>
+    <p class="section-description">
+      beforeEach、afterEach、beforeAll、afterAll ライフサイクルフック、および this コンテキストの分離を学ぶ
+    </p>
+  </div>
+
+  <div class="test-scenarios">
+    @for (scenario of testScenarios; track scenario.name; let i = $index) {
+      <div class="scenario-card">
+        <div class="scenario-header">
+          <h3>{{ scenario.name }}</h3>
+          <p>{{ scenario.description }}</p>
+        </div>
+
+        <div class="scenario-content">
+          <div class="code-section">
+            <h4>コード例：</h4>
+            <div class="code-grid">
+              <div class="code-panel">
+                <app-code-highlight
+                  [code]="scenario.codeExample.implementation"
+                  language="typescript"
+                  title="実装コード (Implementation)">
+                </app-code-highlight>
+              </div>
+              <div class="code-panel">
+                <app-code-highlight
+                  [code]="scenario.codeExample.test"
+                  language="typescript"
+                  title="テストコード (Test)">
+                </app-code-highlight>
+              </div>
+            </div>
+          </div>
+
+          <div class="execution-section">
+            <h4>実行手順：</h4>
+            <div class="steps-list">
+              @for (step of scenario.steps; track step.step; let stepIndex = $index) {
+                <div class="step-item" [class.executed]="step.executed" [class.pending]="!step.executed">
+                  <div class="step-number">{{ stepIndex + 1 }}</div>
+                  <div class="step-content">
+                    <div class="step-name">{{ step.step }}</div>
+                    <div class="step-description">{{ step.description }}</div>
+                    @if (step.fooValue !== undefined) {
+                      <div class="step-value">foo = {{ step.fooValue }}</div>
+                    }
+                    @if (step.thisValue) {
+                      <div class="step-value">this = {{ step.thisValue | json }}</div>
+                    }
+                  </div>
+                  <div class="step-status">
+                    @if (step.executed) {
+                      <span class="executed-mark">✓</span>
+                    } @else {
+                      <span class="pending-mark">⏳</span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="action-buttons">
+              @switch (i) {
+                @case (0) {
+                  <button class="execute-btn" (click)="simulateLifecycleExecution()" type="button">
+                    ライフサイクル実行デモ
+                  </button>
+                }
+                @case (1) {
+                  <button class="execute-btn" (click)="simulateThisIsolation()" type="button">
+                    this コンテキストの分離デモ
+                  </button>
+                }
+                @case (2) {
+                  <button class="execute-btn" (click)="simulateFailFunction()" type="button">
+                    fail() 関数使用デモ
+                  </button>
+                }
+              }
+            </div>
+          </div>
+        </div>
+
+        @if (executionLog.length > 0) {
+          <div class="execution-log">
+            <h4>実行日誌：</h4>
+            <div class="log-content">
+              @for (log of executionLog; track log) {
+                <div class="log-entry">{{ log }}</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="additional-concepts">
+    <div class="concept-card">
+      <h3>ネストした例を実行</h3>
+      <div class="code-section">
+        <app-code-highlight
+          [code]="nestedDescribeExample"
+          language="typescript"
+          title="ネストした例を実行">
+        </app-code-highlight>
+      </div>
+      <button class="execute-btn" (click)="runNestedDescribeExample()" type="button">
+        実行
+      </button>
+    </div>
+
+    <div class="concept-card">
+      <h3>テストをスキップする方法</h3>
+      <div class="skip-methods">
+        <div class="method">
+          <h4>xdescribe - テストスイート全体をスキップ</h4>
+          <app-code-highlight
+            [code]="skipExamples.xdescribe"
+            language="typescript"
+            title="xdescribe 例">
+          </app-code-highlight>
+        </div>
+        
+        <div class="method">
+          <h4>xit - 個別テストをスキップ</h4>
+          <app-code-highlight
+            [code]="skipExamples.xit"
+            language="typescript"
+            title="xit 例">
+          </app-code-highlight>
+        </div>
+        
+        <div class="method">
+          <h4>pending() - テストを保留としてマーク</h4>
+          <app-code-highlight
+            [code]="skipExamples.pending"
+            language="typescript"
+            title="pending 例">
+          </app-code-highlight>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="learning-summary">
+    <h3>学習ポイント</h3>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <h4>beforeAll / afterAll</h4>
+        <p>テストスイート全体の開始前/後に1回実行、重い初期化処理/クリーンアップ処理に使用</p>
+      </div>
+      <div class="summary-item">
+        <h4>beforeEach / afterEach</h4>
+        <p>各テストの前後に実行され、各テストがクリーンな環境を持つことを保証</p>
+      </div>
+      <div class="summary-item">
+        <h4>this 上下文</h4>
+        <p>各テストは独立した this オブジェクトを持ち、テスト間の汚染を防止</p>
+      </div>
+      <div class="summary-item">
+        <h4>fail() 関数</h4>
+        <p>テストを明確に失敗としてマークし、通常は実行されるべきでないコールバック関数内で使用</p>
+      </div>
+    </div>
+  </div>
+</div>
