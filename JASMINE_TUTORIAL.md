@@ -142,13 +142,7 @@ describe('Calculator', () => {
 
 ### 実践例：カウンターサービスのテスト
 
-<table>
-<tr>
-<th width="50%">📁 実装コード</th>
-<th width="50%">🧪 テストコード</th>
-</tr>
-<tr>
-<td>
+**実装コード**
 
 ```typescript
 class CounterService {
@@ -186,8 +180,7 @@ class CounterService {
 }
 ```
 
-</td>
-<td>
+**テストコード**
 
 ```typescript
 describe('CounterService ライフサイクル', () => {
@@ -236,10 +229,6 @@ describe('CounterService ライフサイクル', () => {
   });
 });
 ```
-
-</td>
-</tr>
-</table>
 
 ### 実行順序の可視化
 
@@ -302,13 +291,7 @@ describe('GoodExample', () => {
 
 ### 基本的な async/await テスト
 
-<table>
-<tr>
-<th width="50%">📁 実装コード</th>
-<th width="50%">🧪 テストコード</th>
-</tr>
-<tr>
-<td>
+**実装コード**
 
 ```typescript
 class DataService {
@@ -360,8 +343,7 @@ interface User {
 }
 ```
 
-</td>
-<td>
+**テストコード**
 
 ```typescript
 describe('DataService async/await', () => {
@@ -414,10 +396,6 @@ describe('DataService async/await', () => {
   });
 });
 ```
-
-</td>
-</tr>
-</table>
 
 ### タイムアウト設定
 
@@ -489,13 +467,7 @@ it('should handle errors', async () => {
 
 ### spyOn() の基本使用法
 
-<table>
-<tr>
-<th width="50%">📁 実装コード</th>
-<th width="50%">🧪 テストコード</th>
-</tr>
-<tr>
-<td>
+**実装コード**
 
 ```typescript
 class EmailService {
@@ -546,8 +518,7 @@ class UserNotificationService {
 }
 ```
 
-</td>
-<td>
+**テストコード**
 
 ```typescript
 describe('UserNotificationService with Spy', () => {
@@ -606,10 +577,6 @@ describe('UserNotificationService with Spy', () => {
   });
 });
 ```
-
-</td>
-</tr>
-</table>
 
 ### Spy の高度な機能
 
@@ -726,13 +693,7 @@ Jasmineの真の力は**Matcher**にあります。デフォルトMatcherでは�
 
 ### デフォルトMatcher の限界
 
-<table>
-<tr>
-<th width="50%">📁 実装コード</th>
-<th width="50%">🧪 問題のあるテストコード</th>
-</tr>
-<tr>
-<td>
+**実装コード**
 
 ```typescript
 interface Product {
@@ -779,8 +740,7 @@ class ProductService {
 }
 ```
 
-</td>
-<td>
+**問題のあるテストコード**
 
 ```typescript
 describe('ProductService - デフォルトMatcherのみ', () => {
@@ -831,19 +791,9 @@ describe('ProductService - デフォルトMatcherのみ', () => {
 });
 ```
 
-</td>
-</tr>
-</table>
-
 ### カスタムMatcher による解決
 
-<table>
-<tr>
-<th width="50%">🔧 カスタムMatcherの定義</th>
-<th width="50%">✨ 改善されたテストコード</th>
-</tr>
-<tr>
-<td>
+**カスタムMatcherの定義**
 
 ```typescript
 // カスタムMatcher の定義
@@ -894,8 +844,7 @@ const customMatchers = {
 };
 ```
 
-</td>
-<td>
+**改善されたテストコード**
 
 ```typescript
 describe('ProductService - カスタムMatcher使用', () => {
@@ -961,10 +910,6 @@ describe('ProductService - カスタムMatcher使用', () => {
   });
 });
 ```
-
-</td>
-</tr>
-</table>
 
 ### カスタムMatcherの設計パターン
 
